@@ -1,8 +1,9 @@
-import { SelectQueryBuilder } from 'typeorm';
 import { IQueryCondition } from '../interfaces/common.interfaces';
 import { IGetContact } from '../interfaces/contact.interfaces';
-import { Person } from '../entities';
 
+export type SearchConditions = {
+  [K in keyof IGetContact]?: IQueryCondition<IGetContact[K]>;
+};
 export const getSearchConditions = ({
   id,
   firstName,
@@ -15,7 +16,7 @@ export const getSearchConditions = ({
   street,
   number,
 }: IGetContact) => {
-  const searchConditions: Record<string, IQueryCondition> = {
+  const searchConditions: SearchConditions = {
     ...(id && {
       id: { condition: 'person.id = :id', value: id },
     }),
@@ -46,13 +47,4 @@ export const getSearchConditions = ({
     }),
   };
   return searchConditions;
-};
-export const loadQuery = (
-  query: SelectQueryBuilder<Person>,
-  searchConditions: Record<string, IQueryCondition>,
-): SelectQueryBuilder<Person> => {
-  Object.entries(searchConditions).forEach(([key, { condition, value }]) => {
-    query.andWhere(condition, { [key]: value });
-  });
-  return query;
 };

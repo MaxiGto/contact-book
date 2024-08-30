@@ -2,7 +2,7 @@ export interface INumericId {
   id: number;
 }
 
-export interface IQueryCondition {
+export interface IQueryCondition<T = any> {
   condition: string;
-  value: any;
+  value: T;
 }

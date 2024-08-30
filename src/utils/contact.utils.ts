@@ -4,6 +4,7 @@ import { IGetContact } from '../interfaces/contact.interfaces';
 import { Person } from '../entities';
 
 export const getSearchConditions = ({
+  id,
   firstName,
   lastName,
   dateOfBirth,
@@ -15,6 +16,9 @@ export const getSearchConditions = ({
   number,
 }: IGetContact) => {
   const searchConditions: Record<string, IQueryCondition> = {
+    ...(id && {
+      id: { condition: 'person.id = :id', value: id },
+    }),
     ...(firstName && {
       firstName: { condition: 'UPPER(person.firstName) = UPPER(:firstName)', value: firstName },
     }),

@@ -3,7 +3,7 @@ import httpStatus from 'http-status';
 
 import catchAsync from '../lib/catchAsync';
 import { create, find, remove, update } from '../services/contact.service';
-import { ICreateContact, IGetContact } from '../interfaces/contact.interfaces';
+import { ICreateContact, IGetContact, IUpdateContact } from '../interfaces/contact.interfaces';
 import { INumericId } from '../interfaces/common.interfaces';
 
 export const getContacts = catchAsync(async (req: Request<{}, {}, {}, IGetContact>, res: Response) => {
@@ -17,7 +17,7 @@ export const createContact = catchAsync(async (req: Request<{}, {}, ICreateConta
 });
 
 export const updateContact = catchAsync(
-  async (req: Request<INumericId, {}, ICreateContact>, res: Response) => {
+  async (req: Request<INumericId, {}, IUpdateContact>, res: Response) => {
     const contact = await update(req.params.id, req.body);
     return res.status(httpStatus.OK).json(contact);
   },

@@ -28,6 +28,7 @@ export class ContactActivity {
     cascade: true,
     eager: true,
     nullable: false,
+    onDelete: 'CASCADE',
   })
   person: Person;
 }

@@ -1,9 +1,17 @@
 import Joi from 'joi';
 import 'dotenv/config';
 
+export enum Environment {
+  Test = 'test',
+  Development = 'development',
+  Production = 'production',
+}
+
 const envVarsSchema = Joi.object()
   .keys({
-    NODE_ENV: Joi.string().valid('production', 'development', 'test').required(),
+    NODE_ENV: Joi.string()
+      .valid(Environment.Production, Environment.Development, Environment.Test)
+      .required(),
     PORT: Joi.number().default(3000),
     MONGODB_URL: Joi.string().required().description('Mongo DB url'),
     API_URL: Joi.string().required().description('API url'),

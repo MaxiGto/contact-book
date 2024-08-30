@@ -4,28 +4,19 @@ import httpStatus from 'http-status';
 import app from '../../app';
 import { setupTestDB } from '../db/setupTestDB';
 import { newContact, updateContact } from '../mocks/contact.mock';
-import { IPlainContact } from '../../interfaces/contact.interfaces';
+import { clearDatabase } from '../../config/db';
 
 setupTestDB();
 
-const { firstName, lastName, dateOfBirth, email, phones, addresses } = newContact;
-
 describe('POST /contacts', () => {
-  it('should return 200 - Create a new contact', async () => {
+  it('should return 200 - Create new contact', async () => {
     const response = await request(app).post('/api/v1/contacts').send(newContact);
 
     expect(response.status).toBe(httpStatus.CREATED);
-    expect(response.body).toEqual(
-      expect.objectContaining({
-        id: expect.any(Number),
-        firstName,
-        lastName,
-        dateOfBirth,
-        email,
-        phones,
-        addresses,
-      }),
-    );
+    expect(response.body).toMatchObject({
+      id: expect.any(Number),
+      ...newContact,
+    });
   });
 
   it('should return 400 - Contact email already registered', async () => {
@@ -39,12 +30,11 @@ describe('POST /contacts', () => {
 });
 
 describe('GET /contacts', () => {
-  let body: IPlainContact;
-  beforeAll(async () => {
-    const response = await request(app).post('/api/v1/contacts').send(newContact);
-    body = response.body;
+  beforeEach(async () => {
+    await clearDatabase();
   });
   it('should return 200 - Fetch contact by query', async () => {
+    const { body } = await request(app).post('/api/v1/contacts').send(newContact);
     const response = await request(app).get('/api/v1/contacts').query({
       email: body.email,
     });
@@ -52,52 +42,39 @@ describe('GET /contacts', () => {
     expect(response.status).toBe(httpStatus.OK);
     expect(response.body.contacts).toBeDefined();
     expect(response.body.contacts.length).toBe(1);
-    expect(response.body.contacts).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          id: body.id,
-          firstName,
-          lastName,
-          dateOfBirth,
-          email,
-          phones,
-          addresses,
-        }),
-      ]),
-    );
+    expect(response.body.contacts[0]).toMatchObject({
+      id: body.id,
+      ...newContact,
+    });
     expect(response.body.count).toBe(response.body.contacts.length);
   });
 });
 
 describe('PATCH /contacts/:id', () => {
-  let body: IPlainContact;
-  beforeAll(async () => {
-    const response = await request(app).post('/api/v1/contacts').send(newContact);
-    body = response.body;
+  beforeEach(async () => {
+    await clearDatabase();
   });
   it('should return 200 - Update contact', async () => {
+    const { body } = await request(app).post('/api/v1/contacts').send(newContact);
     const response = await request(app).patch(`/api/v1/contacts/${body.id}`).send(updateContact);
 
     expect(response.status).toBe(httpStatus.OK);
-    expect(response.body).toEqual(
-      expect.objectContaining({
-        id: body.id,
-        firstName: updateContact.firstName,
-        lastName: updateContact.lastName,
-        phones: updateContact.phones!,
-        addresses: updateContact.addresses!,
-      }),
-    );
+    expect(response.body).toMatchObject({
+      id: body.id,
+      firstName: updateContact.firstName,
+      lastName: updateContact.lastName,
+      phones: updateContact.phones!,
+      addresses: updateContact.addresses!,
+    });
   });
 });
 
 describe('DELETE /contacts/:id', () => {
-  let body: IPlainContact;
-  beforeAll(async () => {
-    const response = await request(app).post('/api/v1/contacts').send(newContact);
-    body = response.body;
+  beforeEach(async () => {
+    await clearDatabase();
   });
   it('should return 200 - Delete contact', async () => {
+    const { body } = await request(app).post('/api/v1/contacts').send(newContact);
     const deleteResponse = await request(app).delete(`/api/v1/contacts/${body.id}`);
     const getResponse = await request(app).get('/api/v1/contacts').query({
       id: body.id,

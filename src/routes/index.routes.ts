@@ -1,5 +1,6 @@
 import express, { Router, Request, Response } from 'express';
 import contactRoute from './contact.routes';
+import contactActivityRoute from './contactActivity.routes';
 
 const router = express.Router();
 
@@ -13,6 +14,10 @@ const defaultIRoute: IRoute[] = [
   {
     path: '/contacts',
     route: contactRoute,
+  },
+  {
+    path: '/activities',
+    route: contactActivityRoute,
   },
 ];
 

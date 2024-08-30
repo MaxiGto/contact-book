@@ -1,8 +1,13 @@
 import { AppDataSource } from '../config/db';
 import { ContactActivity } from '../entities';
 import { ContactActivityType } from '../entities/contactActivity.entity';
-import { ICreateContactActivity, IGetContactActivityResult } from '../interfaces/contactActivity.interfaces';
+import {
+  ICreateContactActivity,
+  ICreateContactActivityResult,
+  IGetContactActivityResult,
+} from '../interfaces/contactActivity.interfaces';
 import { loadQuery } from '../utils/common.utils';
+import { getActivityPlainContact } from '../utils/contact.utils';
 import { getSearchConditions } from '../utils/contactActivity.utils';
 import { findOne } from './contact.service';
 
@@ -17,12 +22,14 @@ export const find = async (
 
   const contactActivities = await query.getMany();
   return {
-    contact,
+    contact: getActivityPlainContact(contact),
     contactActivities,
   };
 };
 
-export const create = async (createActivity: ICreateContactActivity): Promise<ContactActivity> => {
+export const create = async (
+  createActivity: ICreateContactActivity,
+): Promise<ICreateContactActivityResult> => {
   const { personId, ...rest } = createActivity;
   const contact = await findOne({ id: personId });
   const contactActivityRepository = AppDataSource.getRepository(ContactActivity);
@@ -31,5 +38,9 @@ export const create = async (createActivity: ICreateContactActivity): Promise<Co
     person: contact,
   });
   await contactActivityRepository.save(newActivity);
-  return newActivity;
+  const { person, ...activity } = newActivity;
+  return {
+    ...activity,
+    contact: getActivityPlainContact(newActivity.person),
+  };
 };

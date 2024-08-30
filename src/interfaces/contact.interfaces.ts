@@ -16,13 +16,20 @@ interface IPlainAddress {
   notes?: string;
 }
 
-export interface ICreateContact {
+export interface IActivityPlainContact {
   firstName: string;
   lastName: string;
   dateOfBirth: string;
   email: string;
+}
+
+export interface ICreateContact extends IActivityPlainContact {
   phones: IPlainPhone[];
   addresses: IPlainAddress[];
+}
+
+export interface IPlainContact extends ICreateContact {
+  id: number;
 }
 
 export interface IGetContact {
@@ -36,10 +43,6 @@ export interface IGetContact {
   locality?: string;
   street?: string;
   number?: number;
-}
-
-export interface IPlainContact extends ICreateContact {
-  id: number;
 }
 
 export interface IUpdateContact {

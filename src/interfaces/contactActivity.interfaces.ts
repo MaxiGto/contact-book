@@ -1,11 +1,14 @@
-import { Person } from '../entities';
 import { ContactActivityType, ContactActivity } from '../entities/contactActivity.entity';
+import { IActivityPlainContact } from './contact.interfaces';
 
-export interface ICreateContactActivity {
-  personId: number;
+interface IContactActivity {
   activityType: ContactActivityType;
   activityDate: string;
   description?: string;
+}
+
+export interface ICreateContactActivity extends IContactActivity {
+  personId: number;
 }
 
 export interface IGetContactActivityParams {
@@ -17,6 +20,11 @@ export interface IGetContactActivityQuery {
 }
 
 export interface IGetContactActivityResult {
-  contact: Person;
+  contact: IActivityPlainContact;
   contactActivities: ContactActivity[];
+}
+
+export interface ICreateContactActivityResult extends IContactActivity {
+  id: number;
+  contact: IActivityPlainContact;
 }

@@ -1,6 +1,6 @@
 import { Person } from '../entities';
 import { IQueryCondition } from '../interfaces/common.interfaces';
-import { IGetContact, IPlainContact } from '../interfaces/contact.interfaces';
+import { IActivityPlainContact, IGetContact, IPlainContact } from '../interfaces/contact.interfaces';
 
 export type SearchConditions = {
   [K in keyof IGetContact]?: IQueryCondition<IGetContact[K]>;
@@ -58,5 +58,16 @@ export const getPlainContact = (contact: Person): IPlainContact => {
       phoneType: { typeName: phoneRest.phoneType.typeName },
     })),
     addresses: contact.addresses.map(({ id, ...addressRest }) => ({ ...addressRest })),
+  };
+};
+
+export const getActivityPlainContact = ({
+  id,
+  phones,
+  addresses,
+  ...rest
+}: Person): IActivityPlainContact => {
+  return {
+    ...rest,
   };
 };

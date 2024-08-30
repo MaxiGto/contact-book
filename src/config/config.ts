@@ -13,10 +13,6 @@ const envVarsSchema = Joi.object()
       .valid(Environment.Production, Environment.Development, Environment.Test)
       .required(),
     PORT: Joi.number().default(3000),
-    MONGODB_URL: Joi.string().required().description('Mongo DB url'),
-    API_URL: Joi.string().required().description('API url'),
-    FRONTEND_URL: Joi.string().required().description('Frontend url'),
-    CRYPTOJS_SECRET_KEY: Joi.string().required().description('CryptoJS key'),
   })
   .unknown();
 

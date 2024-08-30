@@ -5,6 +5,7 @@ import { ICreateContact, IGetContact } from '../interfaces/contact.interfaces';
 import { INumericId } from '../interfaces/common.interfaces';
 
 export const getContactSchema = Joi.object<IGetContact>({
+  id: Joi.number().integer().positive(),
   firstName: Joi.string().min(1),
   lastName: Joi.string().min(1),
   dateOfBirth: Joi.string().custom(dateOfBirth),

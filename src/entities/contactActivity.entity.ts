@@ -2,9 +2,9 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import type { Person } from '.';
 
 export enum ContactActivityType {
-  CALL = 'call',
-  MEETING = 'meeting',
-  EMAIL = 'email',
+  Call = 'call',
+  Meeting = 'meeting',
+  Email = 'email',
 }
 
 @Entity({ name: 'ContactActivity' })

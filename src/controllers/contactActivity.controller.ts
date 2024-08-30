@@ -19,6 +19,6 @@ export const getContactActivity = catchAsync(
 export const createContactActivity = catchAsync(
   async (req: Request<{}, {}, ICreateContactActivity>, res: Response) => {
     const contactActivity = await create(req.body);
-    return res.status(httpStatus.OK).json(contactActivity);
+    return res.status(httpStatus.CREATED).json(contactActivity);
   },
 );

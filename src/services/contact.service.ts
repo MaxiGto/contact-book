@@ -5,7 +5,8 @@ import { AppDataSource } from '../config/db';
 import ApiError from '../lib/ApiError';
 import { Address, Person, Phone, PhoneType } from '../entities';
 import { ICreateContact, IGetContact, IUpdateContact } from '../interfaces/contact.interfaces';
-import { getSearchConditions, loadQuery } from '../utils/contact.utils';
+import { getSearchConditions } from '../utils/contact.utils';
+import { loadQuery } from '../utils/common.utils';
 
 export const findOne = async (condition: FindOptionsWhere<Person>): Promise<Person> => {
   const contact = await AppDataSource.getRepository(Person).findOneBy(condition);
@@ -20,7 +21,7 @@ export const find = async (getContact: IGetContact): Promise<Person[]> => {
     .leftJoinAndSelect('phone.phoneType', 'phoneType')
     .leftJoinAndSelect('person.addresses', 'address');
   const searchConditions = getSearchConditions(getContact);
-  query = loadQuery(query, searchConditions);
+  query = loadQuery<Person>(query, searchConditions);
   const contacts = await query.getMany();
   return contacts;
 };

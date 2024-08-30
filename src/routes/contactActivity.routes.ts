@@ -1,8 +1,13 @@
 import express, { Router } from 'express';
-import { validateCreateContactActivity } from '../middlewares/contactActivity.middleware';
-import { createContactActivity } from '../controllers/contactActivity.controller';
+import {
+  validateCreateContactActivity,
+  validateGetContactActivities,
+} from '../middlewares/contactActivity.middleware';
+import { createContactActivity, getContactActivity } from '../controllers/contactActivity.controller';
 
 const router: Router = express.Router();
+
+router.get('/:personId', validateGetContactActivities, getContactActivity);
 
 router.post('/', validateCreateContactActivity, createContactActivity);
 

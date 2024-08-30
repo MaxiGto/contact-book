@@ -1,12 +1,15 @@
 import { AppDataSource } from '../config/db';
 import { ContactActivity } from '../entities';
 import { ContactActivityType } from '../entities/contactActivity.entity';
-import { ICreateContactActivity } from '../interfaces/contactActivity.interfaces';
+import { ICreateContactActivity, IGetContactActivityResult } from '../interfaces/contactActivity.interfaces';
 import { loadQuery } from '../utils/common.utils';
 import { getSearchConditions } from '../utils/contactActivity.utils';
 import { findOne } from './contact.service';
 
-export const find = async (personId: number, type: ContactActivityType | undefined) => {
+export const find = async (
+  personId: number,
+  type: ContactActivityType | undefined,
+): Promise<IGetContactActivityResult> => {
   const contact = await findOne({ id: personId });
   let query = AppDataSource.getRepository(ContactActivity).createQueryBuilder('activity');
   const searchConditions = getSearchConditions(personId, type);

@@ -1,4 +1,5 @@
-import { ContactActivityType } from '../entities/contactActivity.entity';
+import { Person } from '../entities';
+import { ContactActivityType, ContactActivity } from '../entities/contactActivity.entity';
 
 export interface ICreateContactActivity {
   personId: number;
@@ -13,4 +14,9 @@ export interface IGetContactActivityParams {
 
 export interface IGetContactActivityQuery {
   type: ContactActivityType;
+}
+
+export interface IGetContactActivityResult {
+  contact: Person;
+  contactActivities: ContactActivity[];
 }

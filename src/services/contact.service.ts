@@ -25,7 +25,7 @@ export const find = async (getContact: IGetContact): Promise<Person[]> => {
   return contacts;
 };
 
-export const create = async (createContact: ICreateContact): Promise<ICreateContact> => {
+export const create = async (createContact: ICreateContact): Promise<Person> => {
   const { phones, addresses, ...rest } = createContact;
   const contactRepository = AppDataSource.getRepository(Person);
   const contact = await contactRepository.findOneBy({ email: createContact.email });
@@ -52,7 +52,7 @@ export const create = async (createContact: ICreateContact): Promise<ICreateCont
   return newContact;
 };
 
-export const update = async (id: number, updateContact: IUpdateContact) => {
+export const update = async (id: number, updateContact: IUpdateContact): Promise<IUpdateContact> => {
   const contact = await AppDataSource.getRepository(Person).findOne({
     where: { id },
     relations: ['phones', 'phones.phoneType', 'addresses'],
@@ -72,7 +72,7 @@ export const update = async (id: number, updateContact: IUpdateContact) => {
   return updatedContact;
 };
 
-export const remove = async (id: number) => {
+export const remove = async (id: number): Promise<Person> => {
   const contact = await findOne({ id });
   await AppDataSource.getRepository(Person).remove(contact);
   return contact;

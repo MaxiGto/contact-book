@@ -11,12 +11,13 @@ export class Phone {
   })
   number: string;
 
-  @ManyToOne('Person', 'phone', { onDelete: 'CASCADE' })
+  @ManyToOne('Person', 'phone', { onDelete: 'CASCADE', nullable: false })
   person: Person;
 
   @ManyToOne('PhoneType', 'phone', {
     cascade: true,
     eager: true,
+    nullable: false,
   })
   phoneType: PhoneType;
 }

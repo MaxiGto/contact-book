@@ -6,7 +6,7 @@ export class Address {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne('Person', 'Address', { onDelete: 'CASCADE' })
+  @ManyToOne('Person', 'Address', { onDelete: 'CASCADE', nullable: false })
   person: Person;
 
   @Column('text')

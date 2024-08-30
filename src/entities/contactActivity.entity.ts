@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import type { Person } from '.';
 
 export enum ContactActivityType {
@@ -24,10 +24,10 @@ export class ContactActivity {
   @Column('text', { nullable: true })
   description?: string;
 
-  @ManyToMany('Person', 'contactActivities', {
+  @ManyToOne('Person', 'contactActivities', {
     cascade: true,
     eager: true,
+    nullable: false,
   })
-  @JoinTable()
-  persons: Person[];
+  person: Person;
 }

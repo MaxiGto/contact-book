@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import type { Address, Phone, ContactActivity } from '.';
 
 @Entity({ name: 'Person' })
@@ -32,6 +32,6 @@ export class Person {
   })
   addresses: Address[];
 
-  @ManyToMany('ContactActivity', 'persons')
+  @OneToMany('ContactActivity', 'persons')
   contactActivities: ContactActivity[];
 }

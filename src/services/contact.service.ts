@@ -75,7 +75,7 @@ export const update = async (id: number, updateContact: IUpdateContact): Promise
   }
   const updatedContact = { ...contact, ...updateContact };
   await AppDataSource.getRepository(Person).save(updatedContact);
-  return getPlainContact(updatedContact);
+  return findOnePlain(id);
 };
 
 export const remove = async (id: number): Promise<IPlainContact> => {

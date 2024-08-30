@@ -6,3 +6,11 @@ export interface ICreateContactActivity {
   activityDate: string;
   description?: string;
 }
+
+export interface IGetContactActivityParams {
+  personId: number;
+}
+
+export interface IGetContactActivityQuery {
+  type: ContactActivityType;
+}

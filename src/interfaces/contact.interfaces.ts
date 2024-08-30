@@ -31,3 +31,28 @@ export interface IUpdateContact {
   phones?: Phone[];
   addresses?: Address[];
 }
+
+interface IPlainPhoneType {
+  typeName: PhoneTypeEnum;
+}
+
+interface IPlainPhone {
+  number: string;
+  phoneType: IPlainPhoneType;
+}
+
+interface IPlainAddress {
+  locality: string;
+  street: string;
+  number: number;
+  notes?: string;
+}
+
+export interface IPlainContact {
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  email: string;
+  phones: IPlainPhone[];
+  addresses: IPlainAddress[];
+}

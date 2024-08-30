@@ -4,8 +4,8 @@ import { FindOptionsWhere } from 'typeorm';
 import { AppDataSource } from '../config/db';
 import ApiError from '../lib/ApiError';
 import { Address, Person, Phone, PhoneType } from '../entities';
-import { ICreateContact, IGetContact, IUpdateContact } from '../interfaces/contact.interfaces';
-import { getSearchConditions } from '../utils/contact.utils';
+import { ICreateContact, IGetContact, IPlainContact, IUpdateContact } from '../interfaces/contact.interfaces';
+import { getPlainContact, getSearchConditions } from '../utils/contact.utils';
 import { loadQuery } from '../utils/common.utils';
 
 export const findOne = async (condition: FindOptionsWhere<Person>): Promise<Person> => {
@@ -14,7 +14,12 @@ export const findOne = async (condition: FindOptionsWhere<Person>): Promise<Pers
   return contact;
 };
 
-export const find = async (getContact: IGetContact): Promise<Person[]> => {
+export const findOnePlain = async (personId: number): Promise<IPlainContact> => {
+  const contact = await findOne({ id: personId });
+  return getPlainContact(contact);
+};
+
+export const find = async (getContact: IGetContact): Promise<IPlainContact[]> => {
   let query = AppDataSource.getRepository(Person)
     .createQueryBuilder('person')
     .leftJoinAndSelect('person.phones', 'phone')
@@ -23,10 +28,10 @@ export const find = async (getContact: IGetContact): Promise<Person[]> => {
   const searchConditions = getSearchConditions(getContact);
   query = loadQuery<Person>(query, searchConditions);
   const contacts = await query.getMany();
-  return contacts;
+  return contacts.map((contact) => getPlainContact(contact));
 };
 
-export const create = async (createContact: ICreateContact): Promise<Person> => {
+export const create = async (createContact: ICreateContact): Promise<IPlainContact> => {
   const { phones, addresses, ...rest } = createContact;
   const contactRepository = AppDataSource.getRepository(Person);
   const contact = await contactRepository.findOneBy({ email: createContact.email });
@@ -50,10 +55,10 @@ export const create = async (createContact: ICreateContact): Promise<Person> => 
     addresses: addresses.map((address) => AppDataSource.getRepository(Address).create(address)),
   });
   await contactRepository.save(newContact);
-  return newContact;
+  return getPlainContact(newContact);
 };
 
-export const update = async (id: number, updateContact: IUpdateContact): Promise<IUpdateContact> => {
+export const update = async (id: number, updateContact: IUpdateContact): Promise<IPlainContact> => {
   const contact = await AppDataSource.getRepository(Person).findOne({
     where: { id },
     relations: ['phones', 'phones.phoneType', 'addresses'],
@@ -70,11 +75,11 @@ export const update = async (id: number, updateContact: IUpdateContact): Promise
   }
   const updatedContact = { ...contact, ...updateContact };
   await AppDataSource.getRepository(Person).save(updatedContact);
-  return updatedContact;
+  return getPlainContact(updatedContact);
 };
 
-export const remove = async (id: number): Promise<Person> => {
+export const remove = async (id: number): Promise<IPlainContact> => {
   const contact = await findOne({ id });
   await AppDataSource.getRepository(Person).remove(contact);
-  return contact;
+  return getPlainContact(contact);
 };
